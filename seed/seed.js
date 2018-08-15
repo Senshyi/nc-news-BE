@@ -13,7 +13,6 @@ const seedDB = (users, topics, articles, comments) => {
     .then(([articleDocs, userDocs]) => {
        return Comment.insertMany(formatComment(comments, articleDocs, userDocs));
     })
-    .catch(console.log)
 
 }
 
