@@ -5,7 +5,7 @@ exports.formatArticle = (articleData, userDocs, topicDocs) => {
         topic: topicDocs.find(topic => articleDatum.topic === topic.slug).slug,
         belongs_to: articleDatum.created_by,
         created_by: userDocs.find(user => user.nickname === articleDatum.belongs_to)._id
-      }
+      };
   });
 };
 
@@ -16,6 +16,6 @@ exports.formatComment = (commentData, articleDocs, userDocs) => {
       ...commentDatum,
       created_by: userDocs.find(user => user.username === commentDatum.created_by)._id,
       belongs_to: articleDocs.find(article => article.title === commentDatum.belongs_to)._id
-    }
-  })
-}
+    };
+  });
+};

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Northcoders news</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <h1><a></a>Northcoders News</h1>
+  <h2><a></a>API Endpoints</h2>
+  <h3><a></a>GET <code>/api/topics</code></h3>
+  <p>Get all the topics</p>
+  <h3><a></a>GET <code>/api/topics/:topic/articles</code></h3>
+  <p>Return all the articles for a certain topic</p>
+  <h3><a></a>GET <code>/api/articles</code></h3>
+  <p>Returns all the articles</p>
+  <h3><a></a>GET <code>/api/articles/:article_id/comments</code></h3>
+  <p>Get all the comments for a individual article</p>
+  <h3><a></a>POST <code>/api/articles/:article_id/comments</code></h3>
+  <p>Add a new comment to an article. This route requires a JSON <code>body</code> with a <code>comment</code> key and value
+    pair<br> e.g: <code>{"comment": "This is my new comment"}</code>
+  </p>
+  <h3><a></a>PUT <code>/api/articles/:article_id</code></h3>
+  <p>Increment or Decrement the votes of an article by one. This route requires a <code>vote</code> query of 'up' or 'down'<br>  e.g:
+    <code>http://northcoders-news-api.herokuapp.com/api/articles/:article_id?vote=up</code>
+  </p>
+  <h3><a></a>PUT <code>/api/comments/:comment_id</code></h3>
+  <p>Increment or Decrement the votes of a comment by one. This route requires a <code>vote</code> query of 'up' or 'down'<br>  e.g:
+    <code>http://northcoders-news-api.herokuapp.com/api/comments/:comment_id?vote=down</code>
+  </p>
+  <h3><a></a>DELETE <code>/api/comments/:comment_id</code></h3>
+  <p>Deletes a comment if the comment was created by the Northcoder user</p>
+  <h3><a></a>GET <code>/api/users/:username</code></h3>
+  <p>Returns a JSON object with the profile data for the specified user.</p>
+  <h3><a></a>GET <code>/api/users/:username/repos</code></h3>
+  <p>Returns a JSON array with all the public repos of the specified user.</p>
+</body>
+</html>

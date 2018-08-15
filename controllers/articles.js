@@ -3,8 +3,9 @@ const { Article, Comment } = require('../models');
 
 const getAllArticles = (req, res, next) => {
   Article.find()
+    .populate('created_by')
     .then(articles => {
-      res.status(200).send({articles});
+      res.status(200).send({ articles});
     });
 };
 
@@ -26,8 +27,10 @@ const addComment = (req, res, next) => {
   const {body, created_by} = req.body;
   Comment.create({body, created_by, belongs_to: req.params.article_id})
     .then(comment => {
+      console.log('here')
       res.status(200).send({comment});
-    });
+    })
+    .catch(console.log)
 };
 
 const updateVotes = (req, res, next) => {
@@ -38,5 +41,9 @@ const updateVotes = (req, res, next) => {
     })
     .catch(console.log);
 };
+
+const getNumOfComments = () => {
+
+}
 
 module.exports = { getAllArticles, getArticleById, getArticleComments, addComment, updateVotes }

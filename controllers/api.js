@@ -1,5 +1,6 @@
+const path = require('path');
 
 exports.getAllEndpoints = (req, res, next) => {
-  console.log('endpoint hitted')
-}
+  res.sendFile(path.join(__dirname, '../public', 'index.html'));
+};
 
