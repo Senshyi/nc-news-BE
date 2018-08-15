@@ -27,6 +27,10 @@ const ArticleSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'users',
     required: true
+  },
+  topic: {
+    type: String,
+    required: true
   }
 });
 
