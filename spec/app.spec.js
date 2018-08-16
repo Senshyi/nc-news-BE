@@ -156,7 +156,8 @@ describe('NC NEWS API', () => {
       return request.put(`/api/articles/${articleDocs[0]._id}?vote=up`)
         .expect(200)
         .then(res => {
-          expect(res.body.article).to.have.all.keys(
+          const { article } = res.body
+          expect(article).to.have.all.keys(
             'votes',
             'created_at',
             '_id',
@@ -167,7 +168,12 @@ describe('NC NEWS API', () => {
             'belongs_to',
             '__v'
           );
-          expect(res.body.article.votes).to.equal(1);
+          expect(article.votes).to.equal(1);
+          expect(article.title).to.equal('Living in the shadow of a great man');
+          expect(article.topic).to.equal('mitch');
+          expect(article.belongs_to).to.equal('butter_bridge');
+          expect(article.body).to.equal('I find this existence challenging');
+          expect(article.created_by).to.equal(`${articleDocs[0].created_by}`);
         });
     });
     it('PUT returns status 400 and error message when query is invalid', () => {
@@ -183,7 +189,19 @@ describe('NC NEWS API', () => {
       return request.get(`/api/articles/${articleDocs[0]._id}/comments`)
         .expect(200)
         .then(res => {
-          expect(res.body.comments.length).to.equal(2);
+          const { comments } = res.body;
+          expect(comments.length).to.equal(2);
+          expect(comments[0]).to.have.all.keys(
+            '_id',
+            'votes',
+            'body',
+            'belongs_to',
+            'created_by',
+            '__v',
+            'created_at'
+          );
+          expect(comments[0].votes).to.equal(7);
+          expect(comments[0].body).to.equal('Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — on you it works.');
         });
     });
     it('GET returns status 400 when ID is invalid', () => {
@@ -295,7 +313,7 @@ describe('NC NEWS API', () => {
     });
   });
   describe('/users/:username',() => {
-    it.only('GET returns status 200 and an object with profile data for the specified user', () => {
+    it('GET returns status 200 and an object with profile data for the specified user', () => {
       return request.get(`/api/users/${userDocs[0].username}`)
         .expect(200)
         .then(res => {
