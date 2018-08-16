@@ -4,15 +4,18 @@ const getAllTopics = (req, res, next) => {
   Topic.find()
     .then(topics => {
       res.status(200).send({topics});
-    });
+    })
+    .catch(next);
 };
 
 const getArticlesByTopic = (req, res, next) => {
-
-  Article.find({topic: req.params.topic_slug})
+  const { topic_slug } = req.params
+  Article.find({topic: topic_slug})
     .then(articles => {
+      if(articles.length === 0) throw { status: 404, msg: `articles for ${topic_slug} topic not found`}
       res.status(200).send({articles});
     })
+    .catch(next)
 }
 
 const addArticleToTopic = (req, res, next) => {
@@ -20,11 +23,13 @@ const addArticleToTopic = (req, res, next) => {
 
   User.findOne({_id: created_by})
     .then(user => {
+      // if(!user) throw 
       return Article.create({ title, body, created_by, topic: req.params.topic_slug, belongs_to: user.username})
     })
     .then(article => {
       res.status(201).send({article})
     })
+    .catch(next);
 };
 
 module.exports = { getAllTopics, getArticlesByTopic, addArticleToTopic}

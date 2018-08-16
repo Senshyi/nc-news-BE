@@ -10,7 +10,6 @@ exports.formatArticle = (articleData, userDocs, topicDocs) => {
 };
 
 exports.formatComment = (commentData, articleDocs, userDocs) => {
-   console.log(commentData[0])
   return commentData.map(commentDatum => {
     return {
       ...commentDatum,

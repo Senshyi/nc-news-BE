@@ -8,12 +8,11 @@ const seedDB = (users, topics, articles, comments) => {
       return Promise.all([User.insertMany(users), Topic.insertMany(topics)])
     })
     .then(([userDocs, topicDocs]) => {
-      return Promise.all([Article.insertMany(formatArticle(articles, userDocs, topicDocs)), userDocs])
+      return Promise.all([Article.insertMany(formatArticle(articles, userDocs, topicDocs)), userDocs, topicDocs])
     })
-    .then(([articleDocs, userDocs]) => {
-       return Comment.insertMany(formatComment(comments, articleDocs, userDocs));
-    })
-
-}
+    .then(([articleDocs, userDocs, topicDocs]) => {
+       return Promise.all([Comment.insertMany(formatComment(comments, articleDocs, userDocs)),userDocs, topicDocs, articleDocs]);
+    });
+};
 
 module.exports = seedDB;
