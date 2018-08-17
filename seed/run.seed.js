@@ -4,7 +4,7 @@ const users = require('./devData/users.json');
 const topics = require('./devData/topics.json');
 const articles = require('./devData/articles.json');
 const comments = require('./devData/comments.json');
-const { DB_URL } = require('../config/db-config.js');
+const DB_URL = require('../config/db-config.js');
 
 mongoose.connect(DB_URL, {useNewUrlParser: true})
   .then(() => {

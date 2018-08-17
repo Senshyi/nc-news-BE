@@ -280,6 +280,7 @@ describe('NC NEWS API', () => {
             'votes'
           );
           expect(comment.votes).to.equal(6);
+          
         });
     });
     it('PUT returns 400 when query is invalid', () => {

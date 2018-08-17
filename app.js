@@ -2,7 +2,7 @@ const app = require('express')();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const apiRouter = require('./router/api');
-const { DB_URL } = require('./config/db-config.js');
+const DB_URL = require('./config/db-config.js');
 
  app.use(bodyParser.json());
 
