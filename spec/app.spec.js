@@ -3,17 +3,14 @@ const app = require('../app.js');
 const request = require('supertest')(app);
 const { expect } = require('chai');
 const mongoose = require('mongoose');
-const users = require('../seed/testData/users.json');
-const topics = require('../seed/testData/topics.json');
-const articles = require('../seed/testData/articles.json');
-const comments = require('../seed/testData/comments.json');
+const testData = require('../seed/testData')
 const seedDB = require('../seed/seed.js');
 
 
 describe('NC NEWS API', () => {
   let commentDocs, userDocs, topicDocs, articleDocs, wrongID = mongoose.Types.ObjectId();
   beforeEach(() => {
-    return seedDB(users, topics, articles, comments).then( docs => {
+    return seedDB(testData).then( docs => {
       [commentDocs, userDocs, topicDocs, articleDocs] = docs
     });
   });
