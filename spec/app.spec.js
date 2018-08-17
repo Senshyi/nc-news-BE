@@ -17,7 +17,7 @@ describe('NC NEWS API', () => {
   after(() => mongoose.disconnect());
 
   describe('/topics', () => {
-    it('GET returns status 200 and an object containing all articles', () => {
+    it('GET returns status 200 and an object containing all topics', () => {
       return request.get('/api/topics')
         .expect(200)
         .then(res => {
@@ -76,7 +76,8 @@ describe('NC NEWS API', () => {
         .send(newArticle)
         .expect(201)
         .then(res => {
-          expect(res.body.article).to.have.all.keys(
+          const { article } = res.body
+          expect(article).to.have.all.keys(
             '_id',
             'title',
             'body',
@@ -86,7 +87,10 @@ describe('NC NEWS API', () => {
             '__v',
             'created_by',
             'votes'
-          )
+          );
+          expect(article.title).to.equal(newArticle.title);
+          expect(article.body).to.equal(newArticle.body);
+          expect(article.created_by).to.equal(`${newArticle.created_by}`);
         });
     });
     it('POST returns status 400 and error message when a required field is missing', () => {
@@ -107,7 +111,25 @@ describe('NC NEWS API', () => {
       return request.get('/api/articles')
       .expect(200)
       .then(res => {
-        expect(res.body.articles.length).to.equal(4);
+        const { articles } = res.body;
+        expect(articles.length).to.equal(4);
+        expect(articles[0]).to.have.all.keys(
+          'votes',
+          'created_at',
+          '_id',
+          'title',
+          'topic',
+          'created_by',
+          'body',
+          'belongs_to',
+          '__v',
+          'comments'
+        )
+        expect(articles[0].title).to.equal('Living in the shadow of a great man');
+        expect(articles[0].topic).to.equal('mitch');
+        expect(articles[0].body).to.equal('I find this existence challenging');
+        expect(articles[0].belongs_to).to.equal('butter_bridge');
+        expect(articles[0].comments).to.equal(2);
       });
     });
   });
@@ -116,7 +138,8 @@ describe('NC NEWS API', () => {
       return request.get(`/api/articles/${articleDocs[0]._id}`)
         .expect(200)
         .then(res => {
-          expect(res.body.article).to.have.all.keys(
+          const { article } = res.body;
+          expect(article).to.have.all.keys(
             'votes',
             'created_at',
             '_id',
@@ -125,14 +148,16 @@ describe('NC NEWS API', () => {
             'created_by',
             'body',
             'belongs_to',
-            '__v'
+            '__v',
+            'comments'
           );
-          expect(res.body.article.votes).to.equal(0),
-          expect(res.body.article.title).to.equal('Living in the shadow of a great man'),
-          expect(res.body.article.topic).to.equal('mitch'),
-          expect(res.body.article.body).to.equal('I find this existence challenging'),
-          expect(res.body.article.belongs_to).to.equal('butter_bridge'),
-          expect(res.body.article.__v).to.equal(0)
+          expect(article.votes).to.equal(articleDocs[0].votes);
+            expect(article.title).to.equal(articleDocs[0].title);
+            expect(article.topic).to.equal(articleDocs[0].topic);
+            expect(article.body).to.equal(articleDocs[0].body);
+            expect(article.belongs_to).to.equal(articleDocs[0].belongs_to);
+            expect(article.__v).to.equal(articleDocs[0].__v);
+          expect(article._id).to.equal(`${articleDocs[0]._id}`);
         });
     });
     it('GET returns status 400 when ID is invalid', () => {
@@ -149,7 +174,7 @@ describe('NC NEWS API', () => {
           expect(res.body.msg).to.equal('Article not found for specified ID')
         });
     });
-    it('PUT update article votes and returns status 200 with updated article object', () => {
+    it.only('PUT update article votes and returns status 200 with updated article object', () => {
       return request.put(`/api/articles/${articleDocs[0]._id}?vote=up`)
         .expect(200)
         .then(res => {
@@ -166,10 +191,10 @@ describe('NC NEWS API', () => {
             '__v'
           );
           expect(article.votes).to.equal(1);
-          expect(article.title).to.equal('Living in the shadow of a great man');
-          expect(article.topic).to.equal('mitch');
-          expect(article.belongs_to).to.equal('butter_bridge');
-          expect(article.body).to.equal('I find this existence challenging');
+          expect(article.title).to.equal(articleDocs[0].title);
+          expect(article.topic).to.equal(articleDocs[0].topic);
+          expect(article.belongs_to).to.equal(articleDocs[0].belongs_to);
+          expect(article.body).to.equal(articleDocs[0].body);
           expect(article.created_by).to.equal(`${articleDocs[0].created_by}`);
         });
     });
@@ -245,8 +270,8 @@ describe('NC NEWS API', () => {
             '__v'
           );
           expect(comment.created_by._id).to.be.equal(`${userDocs[0]._id}`);
-          expect(comment.created_by.username).to.equal('butter_bridge');
-          expect(comment.created_by.name).to.equal('jonny')
+          expect(comment.created_by.username).to.equal(userDocs[0].username);
+          expect(comment.created_by.name).to.equal(userDocs[0].name);
         });
     });
     it('POST returns status 400 when required field is missing', () => {
@@ -277,7 +302,8 @@ describe('NC NEWS API', () => {
             'votes'
           );
           expect(comment.votes).to.equal(6);
-          
+          expect(comment._id).to.equal(`${commentDocs[0]._id}`);
+          expect(comment.body).to.equal(commentDocs[0].body);
         });
     });
     it('PUT returns 400 when query is invalid', () => {
@@ -298,6 +324,7 @@ describe('NC NEWS API', () => {
       return request.del(`/api/comments/${commentDocs[0]._id}`)
         .expect(200)
         .then(res => {
+          const { comment } = res.body
           expect(res.body.comment).to.have.all.keys(
             '_id',
             '__v',
@@ -307,8 +334,27 @@ describe('NC NEWS API', () => {
             'created_by',
             'votes'
           );
+          expect(comment._id).to.equal(`${commentDocs[0]._id}`)
+          expect(comment.belongs_to).to.equal(`${commentDocs[0].belongs_to}`)
+          expect(comment.body).to.equal(commentDocs[0].body)
+          expect(comment.votes).to.equal(commentDocs[0].votes)
+          expect(comment.created_by).to.equal(`${commentDocs[0].created_by}`)
         });
     });
+    it('DELETE returns status 404 and err message when comment ID does not exist', () => {
+      return request.del(`/api/comments/${wrongID}`)
+        .expect(404)
+        .then( res => {
+          expect(res.body.msg).to.equal('Comment not found')
+        })
+    })
+    it('DELETE returns status 400 and err message when ID is invalid', () => {
+      return request.del(`/api/comments/$invalidID`)
+        .expect(400)
+        .then(res => {
+          expect(res.body.msg).to.equal('Cast to ObjectId failed for value "$invalidID" at path "_id" for model "comments"')
+        })
+    })
   });
   describe('/users/:username',() => {
     it('GET returns status 200 and an object with profile data for the specified user', () => {
@@ -323,9 +369,10 @@ describe('NC NEWS API', () => {
             'name',
             'username'
           );
-          expect(user.name).to.equal('jonny')
-          expect(user.username).to.equal('butter_bridge')
-          expect(user.avatar_url).to.equal('https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg')
+          expect(user._id).to.equal(`${userDocs[0]._id}`);
+          expect(user.name).to.equal(userDocs[0].name);
+          expect(user.username).to.equal(userDocs[0].username);
+          expect(user.avatar_url).to.equal(userDocs[0].avatar_url);
         });
     });
     it('GET returns status 404 when username does not exists', () => {

@@ -2,18 +2,29 @@ const { Article, Comment, User } = require('../models');
 
 
 const getAllArticles = (req, res, next) => {
-  Article.find()
-    .populate('created_by')
-    .then(articles => {
-      res.status(200).send({articles});
-    });
+  return Promise.all([Article.find(), Comment.find()])
+    .then(([articlesWoComments, comments]) => {
+      if (articlesWoComments.length === 0) throw { status: 404, msg: 'No articles found' }
+      articles = articlesWoComments.map(article => {
+        return {
+          ...article.toObject(),
+          comments: comments.filter(comment => `${comment.belongs_to}` === `${article._id}`).length
+        }
+      })
+      res.status(200).send({ articles });
+    })
+    .catch(next);
 };
 
 const getArticleById = (req, res, next) => {
-  Article.findOne({_id: req.params.article_id})
-    .then(article => {
+  return Promise.all([Article.findOne({ _id: req.params.article_id }), Comment.find({ belongs_to: req.params.article_id})])
+    .then(([article, comments]) => {
       if(!article) throw {status: 404, msg: 'Article not found for specified ID'}
-      else res.status(200).send({article});
+      else {
+        res.status(200).send({article: {
+          ...article.toObject(),
+          comments: comments.length
+        }});}
     })
     .catch(next);
 };
@@ -45,7 +56,7 @@ const addComment = (req, res, next) => {
 const updateVotes = (req, res, next) => {
   const vote = req.query.vote === 'up' ? 1 : req.query.vote === 'down' ? -1 : undefined;
   if(!vote) throw {status: 400, msg: 'Invalid query'}
-  Article.findOneAndUpdate({_id: req.params.article_id}, {$inc:{votes: vote}}, {new: true})
+  Article.findByIdAndUpdate(req.params.article_id, {$inc:{votes: vote}}, {new: true})
     .then(article => {
       res.status(200).send({article});
     })

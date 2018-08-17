@@ -15,6 +15,7 @@ const updateCommentVotes = (req, res, next) => {
 const removeComment = (req, res, next) => {
   Comment.findOneAndRemove({_id: req.params.comment_id})
     .then(comment => {
+      if(!comment) throw {status: 404, msg: 'Comment not found'}
       res.status(200).send({comment});
     })
     .catch(next)
