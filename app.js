@@ -6,7 +6,7 @@ const DB_URL = process.env.DB_URL || require('./config/db-config.js');
 
  app.use(bodyParser.json());
 
-mongoose.connect(DB_URL, {useNewUrlParser: true})
+mongoose.connect(DB_URL, { useNewUrlParser: true })
   .then(() => {
     console.log(`Connected to ${DB_URL}`);
   });

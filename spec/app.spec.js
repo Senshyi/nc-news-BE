@@ -22,7 +22,9 @@ describe('NC NEWS API', () => {
         .expect(200)
         .then(res => {
           const { topics } = res.body
-          expect(Array.isArray(topics)).to.be.true;
+          expect(res.body).to.be.a('object');
+          expect(res.body).to.have.all.keys('topics');
+          expect(topics).to.be.a('array');
           expect(topics.length).to.equal(2);
           expect(topics[0]).to.have.all.keys(
             '_id',
@@ -41,6 +43,9 @@ describe('NC NEWS API', () => {
         .expect(200)
         .then(res => {
           const { articles } = res.body;
+          expect(res.body).to.be.a('object');
+          expect(res.body).to.have.all.keys('articles');
+          expect(articles).to.be.a('array');
           expect(Array.isArray(articles)).to.be.true;
           expect(articles.length).to.equal(2);
           expect(articles[0]).to.have.all.keys(
@@ -77,6 +82,9 @@ describe('NC NEWS API', () => {
         .expect(201)
         .then(res => {
           const { article } = res.body
+          expect(res.body).to.be.a('object');
+          expect(res.body).to.have.all.keys('article');
+          expect(article).to.be.a('object');
           expect(article).to.have.all.keys(
             '_id',
             'title',
@@ -112,6 +120,8 @@ describe('NC NEWS API', () => {
       .expect(200)
       .then(res => {
         const { articles } = res.body;
+        expect(res.body).to.be.a('object');
+        expect(articles).to.be.a('array');
         expect(articles.length).to.equal(4);
         expect(articles[0]).to.have.all.keys(
           'votes',
@@ -125,10 +135,13 @@ describe('NC NEWS API', () => {
           '__v',
           'comments'
         )
-        expect(articles[0].title).to.equal('Living in the shadow of a great man');
-        expect(articles[0].topic).to.equal('mitch');
-        expect(articles[0].body).to.equal('I find this existence challenging');
-        expect(articles[0].belongs_to).to.equal('butter_bridge');
+        console.log(articleDocs[0].title)
+        expect(articles[0]._id).to.equal(`${articleDocs[0]._id}`);
+        expect(articles[0].title).to.equal(articleDocs[0].title);
+        expect(articles[0].topic).to.equal(articleDocs[0].topic);
+        expect(articles[0].body).to.equal(articleDocs[0].body);
+        expect(articles[0].belongs_to).to.equal(`${articleDocs[0].belongs_to}`);
+        expect(articles[0].created_by).to.equal(`${articleDocs[0].created_by}`)
         expect(articles[0].comments).to.equal(2);
       });
     });
@@ -139,6 +152,9 @@ describe('NC NEWS API', () => {
         .expect(200)
         .then(res => {
           const { article } = res.body;
+          expect(res.body).to.be.a('object');
+          expect(res.body).to.have.all.keys('article');
+          expect(article).to.be.a('object');
           expect(article).to.have.all.keys(
             'votes',
             'created_at',
@@ -174,11 +190,14 @@ describe('NC NEWS API', () => {
           expect(res.body.msg).to.equal('Article not found for specified ID')
         });
     });
-    it.only('PUT update article votes and returns status 200 with updated article object', () => {
+    it('PUT update article votes and returns status 200 with updated article object', () => {
       return request.put(`/api/articles/${articleDocs[0]._id}?vote=up`)
         .expect(200)
         .then(res => {
           const { article } = res.body
+          expect(res.body).to.be.a('object');
+          expect(res.body).to.have.all.keys('article');
+          expect(article).to.be.a('object');
           expect(article).to.have.all.keys(
             'votes',
             'created_at',
@@ -212,6 +231,9 @@ describe('NC NEWS API', () => {
         .expect(200)
         .then(res => {
           const { comments } = res.body;
+          expect(res.body).to.be.a('object');
+          expect(res.body).to.have.all.keys('comments');
+          expect(comments).to.be.a('array');
           expect(comments.length).to.equal(2);
           expect(comments[0]).to.have.all.keys(
             '_id',
@@ -250,6 +272,9 @@ describe('NC NEWS API', () => {
         .expect(201)
         .then(res => {
           const { comment } = res.body;
+          expect(res.body).to.be.a('object');
+          expect(res.body).to.have.all.keys('comment');
+          expect(comment).to.be.a('object');
           expect(comment).to.have.all.keys(
             '_id',
             'body',
@@ -292,6 +317,9 @@ describe('NC NEWS API', () => {
         .expect(200)
         .then(res => {
           const { comment } = res.body;
+          expect(res.body).to.be.a('object');
+          expect(res.body).to.have.all.keys('comment');
+          expect(comment).to.be.a('object');
           expect(comment).to.have.all.keys(
             '_id',
             '__v',
@@ -325,6 +353,9 @@ describe('NC NEWS API', () => {
         .expect(200)
         .then(res => {
           const { comment } = res.body
+          expect(res.body).to.be.a('object');
+          expect(res.body).to.have.all.keys('comment');
+          expect(comment).to.be.a('object');
           expect(res.body.comment).to.have.all.keys(
             '_id',
             '__v',
@@ -334,11 +365,11 @@ describe('NC NEWS API', () => {
             'created_by',
             'votes'
           );
-          expect(comment._id).to.equal(`${commentDocs[0]._id}`)
-          expect(comment.belongs_to).to.equal(`${commentDocs[0].belongs_to}`)
-          expect(comment.body).to.equal(commentDocs[0].body)
-          expect(comment.votes).to.equal(commentDocs[0].votes)
-          expect(comment.created_by).to.equal(`${commentDocs[0].created_by}`)
+          expect(comment._id).to.equal(`${commentDocs[0]._id}`);
+          expect(comment.belongs_to).to.equal(`${commentDocs[0].belongs_to}`);
+          expect(comment.body).to.equal(commentDocs[0].body);
+          expect(comment.votes).to.equal(commentDocs[0].votes);
+          expect(comment.created_by).to.equal(`${commentDocs[0].created_by}`);
         });
     });
     it('DELETE returns status 404 and err message when comment ID does not exist', () => {
@@ -362,6 +393,9 @@ describe('NC NEWS API', () => {
         .expect(200)
         .then(res => {
           const { user } = res.body
+          expect(res.body).to.be.a('object');
+          expect(res.body).to.have.all.keys('user');
+          expect(user).to.be.a('object');
           expect(user).to.have.all.keys(
             '_id',
             '__v',
