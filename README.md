@@ -50,7 +50,7 @@ mongod
 
 ## Running the tests
 
-This API has been tested before deployment. to run the included tests use the command:
+This API has been tested before deployment. To run the included tests use the command:
 ```
 npm test
 ```
