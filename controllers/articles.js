@@ -4,7 +4,6 @@ const { Article, Comment, User } = require('../models');
 const getAllArticles = (req, res, next) => {
   return Promise.all([Article.find(), Comment.find()])
     .then(([articlesWoComments, comments]) => {
-      if (articlesWoComments.length === 0) throw { status: 404, msg: 'No articles found' }
       articles = articlesWoComments.map(article => {
         return {
           ...article.toObject(),
@@ -32,7 +31,6 @@ const getArticleById = (req, res, next) => {
 const getArticleComments = (req, res, next) => {
   Comment.find({ belongs_to: req.params.article_id})
     .then(comments => {
-      if(comments.length === 0) throw {status: 404, msg: 'Comments for specified ID does not exists'}
       res.status(200).send({comments});
     })
     .catch(next);

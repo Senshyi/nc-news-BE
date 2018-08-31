@@ -32,8 +32,8 @@ describe('NC NEWS API', () => {
             'slug',
             'title'
           );
-          expect(topics[0].title).to.equal('Mitch');
-          expect(topics[0].slug).to.equal('mitch');
+          expect(topics[0].title).to.equal(topicDocs[0].title);
+          expect(topics[0].slug).to.equal(topicDocs[0].slug);
         });
     });
   });
@@ -59,9 +59,9 @@ describe('NC NEWS API', () => {
             'created_by',
             'votes'
           );
-          expect(articles[0].title).to.equal('They\'re not exactly dogs, are they?');
-          expect(articles[0].body).to.equal('Well? Think about it.');
-          expect(articles[0].belongs_to).to.equal('butter_bridge');
+          expect(articles[0].title).to.equal(articleDocs[2].title);
+          expect(articles[0].body).to.equal(articleDocs[2].body);
+          expect(articles[0].belongs_to).to.equal(articleDocs[2].belongs_to);
         });
     });
     it('GET returns status 404 and error message if the topic slug does not exists', () => {
@@ -135,7 +135,6 @@ describe('NC NEWS API', () => {
           '__v',
           'comments'
         )
-        console.log(articleDocs[0].title)
         expect(articles[0]._id).to.equal(`${articleDocs[0]._id}`);
         expect(articles[0].title).to.equal(articleDocs[0].title);
         expect(articles[0].topic).to.equal(articleDocs[0].topic);
@@ -209,7 +208,7 @@ describe('NC NEWS API', () => {
             'belongs_to',
             '__v'
           );
-          expect(article.votes).to.equal(1);
+          expect(article.votes).to.equal(articleDocs[0].votes + 1);
           expect(article.title).to.equal(articleDocs[0].title);
           expect(article.topic).to.equal(articleDocs[0].topic);
           expect(article.belongs_to).to.equal(articleDocs[0].belongs_to);
@@ -253,13 +252,6 @@ describe('NC NEWS API', () => {
         .expect(400)
         .then(res => {
           expect(res.body.msg).to.equal('Cast to ObjectId failed for value "invalidID" at path "belongs_to" for model "comments"');
-        });
-    });
-    it('GET returns status 404 when comments for particular article does not exists', () => {
-      return request.get(`/api/articles/${wrongID}/comments`)
-        .expect(404)
-        .then(res => {
-          expect(res.body.msg).to.equal('Comments for specified ID does not exists');
         });
     });
     it('POST returns status 201, object with added comment and adds comment to database', () => {
@@ -329,7 +321,7 @@ describe('NC NEWS API', () => {
             'created_by',
             'votes'
           );
-          expect(comment.votes).to.equal(6);
+          expect(comment.votes).to.equal(commentDocs[0].votes - 1);
           expect(comment._id).to.equal(`${commentDocs[0]._id}`);
           expect(comment.body).to.equal(commentDocs[0].body);
         });
