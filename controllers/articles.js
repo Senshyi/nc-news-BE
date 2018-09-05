@@ -2,7 +2,7 @@ const { Article, Comment, User } = require('../models');
 
 
 const getAllArticles = (req, res, next) => {
-  return Promise.all([Article.find(), Comment.find()])
+  return Promise.all([Article.find().populate('created_by'), Comment.find()])
     .then(([articlesWoComments, comments]) => {
       articles = articlesWoComments.map(article => {
         return {
@@ -16,7 +16,7 @@ const getAllArticles = (req, res, next) => {
 };
 
 const getArticleById = (req, res, next) => {
-  return Promise.all([Article.findOne({ _id: req.params.article_id }), Comment.find({ belongs_to: req.params.article_id})])
+  return Promise.all([Article.findOne({ _id: req.params.article_id }).populate('created_by'), Comment.find({ belongs_to: req.params.article_id})])
     .then(([article, comments]) => {
       if(!article) throw {status: 404, msg: 'Article not found for specified ID'}
       else {
