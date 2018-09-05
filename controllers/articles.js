@@ -30,6 +30,7 @@ const getArticleById = (req, res, next) => {
 
 const getArticleComments = (req, res, next) => {
   Comment.find({ belongs_to: req.params.article_id})
+    .populate('created_by')
     .then(comments => {
       res.status(200).send({comments});
     })
